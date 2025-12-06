@@ -3,8 +3,6 @@ if (Deno.args.length !== 1) {
   Deno.exit(1);
 }
 
-let start = performance.mark("start");
-
 const encoder = new TextEncoder();
 const imports = {
   env: {
@@ -18,14 +16,12 @@ const imports = {
   },
 };
 
+let start = performance.mark("start");
 const filePath = Deno.args[0];
-// TODO catch?
 const wasmCode = await Deno.readFile(filePath);
-
-const wasmModule = new WebAssembly.Module(wasmCode);
-const wasmInstance = new WebAssembly.Instance(wasmModule, imports);
-const main = (wasmInstance.exports["main"] ??
-  wasmInstance.exports["main::main"]) as CallableFunction;
+const wasmInstance = await WebAssembly.instantiate(wasmCode, imports);
+const main = (wasmInstance.instance.exports["main"] ??
+  wasmInstance.instance.exports["main::main"]) as CallableFunction;
 main();
 let perf = performance.measure("runtime", "start");
 console.log(`${perf.duration.toFixed(2)}ms`);

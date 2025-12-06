@@ -159,7 +159,6 @@ fn decode(i : I32) -> Instruction {
     }
 }
 
-// Runs the input program to completion, consuming its memory
 fn init_vm(code : Array[I32]) -> VM {
   let len = array_len#[I32](code);
   let copy = array_new#[I32](0, len);
