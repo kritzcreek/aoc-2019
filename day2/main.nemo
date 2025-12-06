@@ -1,0 +1,112 @@
+use input
+use io
+use vec
+use string
+use i32
+
+fn is_space(i : I32) -> Bool {
+  i == 32 || i == 10
+}
+
+fn digit(i : I32) -> I32 {
+  i - 48
+}
+
+fn is_comma(i : I32) -> Bool {
+  i == 44
+}
+
+fn parse(input : Bytes) -> Array[I32] {
+  let len = bytes_len(input);
+  let i = 0;
+  let numbers = vec::new(0);
+  let current = 0;
+  while i < len {
+    let c = bytes_get(input, i);
+    if is_comma(c) {
+      vec::push(numbers, current);
+      set current = 0;
+    } else {
+      set current = current * 10 + digit(c);
+    };
+    set i = i + 1;
+  };
+  vec::push(numbers, current);
+
+  let result = array_new#[I32](0, numbers.len);
+  set i = 0;
+  while i < numbers.len {
+    set result[i] = numbers.buf[i];
+    set i = i + 1;
+  };
+  result
+}
+
+fn reset_numbers(original : Array[I32], numbers : Array[I32]) {
+  let i = 0;
+  while i < array_len#[I32](numbers) {
+    set numbers[i] = original[i];
+    set i = i + 1;
+  };
+}
+
+fn eval(numbers : Array[I32], offset : I32) -> Bool {
+  when numbers[offset] == 99 {
+    return true
+  };
+  let arg1 = numbers[numbers[offset + 1]];
+  let arg2 = numbers[numbers[offset + 2]];
+  let loc = numbers[offset + 3];
+  when numbers[offset] == 1 {
+    set numbers[loc] = arg1 + arg2;
+  };
+  when numbers[offset] == 2 {
+    set numbers[loc] = arg1 * arg2;
+  };
+  false
+}
+
+fn run(numbers : Array[I32]) -> I32 {
+  let i = 0;
+  while i < array_len#[I32](numbers) {
+    when eval(numbers, i) {
+      return numbers[0];
+    };
+    set i = i + 4;
+  };
+  numbers[0]
+}
+
+fn solution1(numbers : Array[I32]) -> I32 {
+  set numbers[1] = 12;
+  set numbers[2] = 2;
+  run(numbers)
+}
+
+fn solution2(original : Array[I32], numbers : Array[I32]) -> I32 {
+  let noun = 0;
+  let verb = 0;
+  while noun <= 99 {
+    while verb <= 99 {
+      reset_numbers(original, numbers);
+      set numbers[1] = noun;
+      set numbers[2] = verb;
+      if run(numbers) == 19690720 {
+        return 100 * noun + verb
+      } else {
+        set verb = verb + 1;
+      };
+    };
+    set verb = 0;
+    set noun = noun + 1;
+  };
+  -1
+}
+
+fn main() {
+  let original = parse(input::input());
+  let numbers = array_new#[I32](0, array_len#[I32](original));
+  reset_numbers(original, numbers);
+  io::print_int(solution1(numbers));
+  io::print_int(solution2(original, numbers));
+}

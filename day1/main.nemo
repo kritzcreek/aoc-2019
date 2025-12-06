@@ -1,0 +1,75 @@
+use input
+use io
+use vec
+use string
+use i32
+
+
+fn is_space(i : I32) -> Bool {
+  i == 32 || i == 10
+}
+
+fn digit(i : I32) -> I32 {
+  i - 48
+}
+
+fn parse(input : Bytes) -> vec::Vec[I32] {
+  let len = bytes_len(input);
+  let i = 0;
+  let numbers = vec::new(0);
+  let current = 0;
+  while i < len {
+    let c = bytes_get(input, i);
+    if is_space(c) {
+      when current != 0 {
+        vec::push(numbers, current);
+      };
+      set current = 0;
+    } else {
+      set current = current * 10 + digit(c);
+    };
+    set i = i + 1;
+  };
+
+  numbers
+}
+
+fn max(x : I32, y : I32) -> I32 {
+  if x < y { y } else { x }
+}
+
+fn fuel(mass : I32) -> I32 {
+  max(0, mass / 3 - 2)
+}
+
+fn solve1(masses : vec::Vec[I32]) -> I32 {
+  let result = 0;
+  let i = 0;
+  while i < masses.len {
+    set result = result + fuel(masses.buf[i]);
+    set i = i + 1;
+  };
+  result
+}
+
+fn solve2(masses : vec::Vec[I32]) -> I32 {
+  let result = 0;
+  let i = 0;
+  while i < masses.len {
+    let current_fuel = fuel(masses.buf[i]);
+    while current_fuel != 0 {
+      set result = result + current_fuel;
+      set current_fuel = fuel(current_fuel);
+    };
+    set i = i + 1;
+  };
+  result
+}
+
+fn main() {
+  let input = input::input();
+  let masses = parse(input);
+
+  io::print_int(solve1(masses));
+  io::print_int(solve2(masses));
+}

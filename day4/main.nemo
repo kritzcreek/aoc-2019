@@ -1,0 +1,85 @@
+use io
+use vec
+use string
+use i32
+
+fn digits_opt(out : Array[I32], i : I32) -> Array[I32] {
+  let j = 0;
+  while j < 6 {
+    let digit = i32_rem(i, 10);
+    set out[5 - j] = digit;
+    set i = i / 10;
+    set j = j + 1;
+  };
+  out
+}
+
+fn solve1(ds : Array[I32]) -> Bool {
+  let i = 0;
+  let len = array_len#[I32](ds);
+  let last = -1;
+  let double = false;
+  while i < len {
+    let cur = ds[i];
+    if cur == last {
+      set double = true;
+    } else {
+      when last > cur {
+        return false
+      };
+      set last = cur;
+    };
+    set i = i + 1
+  };
+
+  double
+}
+
+fn solve2(ds : Array[I32]) -> Bool {
+  let i = 0;
+  let len = array_len#[I32](ds);
+  let double = false;
+  let last = -1;
+  let length = 1;
+  while i < len {
+    let cur = ds[i];
+    if cur == last {
+      set length = length + 1;
+    } else {
+      when length == 2 {
+        set double = true;
+      };
+      when last > cur {
+        return false;
+      };
+      set length = 1;
+    };
+    set last = cur;
+    set i = i + 1
+  };
+  when length == 2 {
+    set double = true
+  };
+
+  double
+}
+
+fn main() {
+  let lo = 136760;
+  let hi = 595730;
+  let acc1 = 0;
+  let acc2 = 0;
+  let buf = array_new#[I32](0, 6);
+  while lo <= hi {
+    let ds = digits_opt(buf, lo);
+    when solve1(ds) {
+      set acc1 = acc1 + 1;
+    };
+    when solve2(ds) {
+      set acc2 = acc2 + 1;
+    };
+    set lo = lo + 1;
+  };
+  io::print_int(acc1);
+  io::print_int(acc2);
+}

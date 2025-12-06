@@ -1,0 +1,66 @@
+use input
+use io
+use vec
+use string
+use i32
+use byte
+
+fn is_space(i : I32) -> Bool {
+  i == 32 || i == 10
+}
+
+fn digit(i : I32) -> I32 {
+  i - 48
+}
+
+fn is_comma(i : I32) -> Bool {
+  i == 44
+}
+
+fn is_l(i : I32) -> Bool {
+  i == 76
+}
+
+fn is_r(i : I32) -> Bool {
+  i == 82
+}
+
+fn is_u(i : I32) -> Bool {
+  i == 85
+}
+
+fn is_d(i : I32) -> Bool {
+  i == 68
+}
+
+variant Direction {
+  struct Up {},
+  struct Down {},
+  struct Left {},
+  struct Right {},
+}
+
+struct Instr {
+  direction : Direction,
+  steps : I32,
+}
+
+struct Paths {
+  first : Array[Instr],
+  second : Array[Instr],
+}
+
+fn parse(input : Bytes) -> Array[I32] {
+  let len = bytes_len(input);
+  let i = 0;
+  let instrs = byte::split(input, 44);
+  while i < array_len#[Bytes](instrs) {
+    io::println_bytes(instrs[i]);
+    set i = i + 1;
+  };
+  []
+}
+
+fn main() {
+  let original = parse(input::input());
+}

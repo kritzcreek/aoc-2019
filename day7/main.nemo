@@ -1,0 +1,106 @@
+use day7_input
+use intcode
+use io
+
+fn run_input(vm : intcode::VM, phase : I32, input: I32) -> I32 {
+  intcode::add_input(vm, input);
+  intcode::add_input(vm, phase);
+  intcode::run(vm);
+  intcode::get_output(vm)
+}
+
+fn part1(code : Array[I32]) {
+  let vm = intcode::init_vm(code);
+  let i = 0;
+  let n = 5 * 5 * 5 * 5 * 5;
+  let maximum = 0;
+  while i < n {
+    let current_out = 0;
+    let phase1 = i % 5;
+    let phase2 = (i / 5) % 5;
+    let phase3 = (i / 25) % 5;
+    let phase4 = (i / 125) % 5;
+    let phase5 = (i / 625) % 5;
+    let mask = 1 << phase1 | 1 << phase2 | 1 << phase3 | 1 << phase4 | 1 << phase5;
+    when mask == 0b11111 {
+      intcode::reset_vm(vm, code);
+      set current_out = run_input(vm, phase1, current_out);
+      intcode::reset_vm(vm, code);
+      set current_out = run_input(vm, phase2, current_out);
+      intcode::reset_vm(vm, code);
+      set current_out = run_input(vm, phase3, current_out);
+      intcode::reset_vm(vm, code);
+      set current_out = run_input(vm, phase4, current_out);
+      intcode::reset_vm(vm, code);
+      set current_out = run_input(vm, phase5, current_out);
+
+      set maximum = if maximum < current_out { current_out } else { maximum };
+    };
+    set i = i + 1;
+  };
+
+  io::print_int(maximum);
+}
+
+fn part2(code : Array[I32]) {
+  let i = 0;
+  let n = 5 * 5 * 5 * 5 * 5;
+  let maximum = 0;
+  while i < n {
+    let phase1 = i % 5;
+    let phase2 = (i / 5) % 5;
+    let phase3 = (i / 25) % 5;
+    let phase4 = (i / 125) % 5;
+    let phase5 = (i / 625) % 5;
+    let mask = 1 << phase1 | 1 << phase2 | 1 << phase3 | 1 << phase4 | 1 << phase5;
+    when mask == 0b11111 {
+      let current_out = 0;
+      let vm1 = intcode::init_vm(code);
+      intcode::add_input(vm1, phase1 + 5);
+      intcode::run(vm1);
+      let vm2 = intcode::init_vm(code);
+      intcode::add_input(vm2, phase2 + 5);
+      intcode::run(vm2);
+      let vm3 = intcode::init_vm(code);
+      intcode::add_input(vm3, phase3 + 5);
+      intcode::run(vm3);
+      let vm4 = intcode::init_vm(code);
+      intcode::add_input(vm4, phase4 + 5);
+      intcode::run(vm4);
+      let vm5 = intcode::init_vm(code);
+      intcode::add_input(vm5, phase5 + 5);
+      intcode::run(vm5);
+
+      while vm5.running {
+        intcode::add_input(vm1, current_out);
+        intcode::run(vm1);
+        set current_out = intcode::get_output(vm1);
+
+        intcode::add_input(vm2, current_out);
+        intcode::run(vm2);
+        set current_out = intcode::get_output(vm2);
+
+        intcode::add_input(vm3, current_out);
+        intcode::run(vm3);
+        set current_out = intcode::get_output(vm3);
+
+        intcode::add_input(vm4, current_out);
+        intcode::run(vm4);
+        set current_out = intcode::get_output(vm4);
+
+        intcode::add_input(vm5, current_out);
+        intcode::run(vm5);
+        set current_out = intcode::get_output(vm5);
+      };
+      set maximum = if maximum < current_out { current_out } else { maximum };
+    };
+    set i = i + 1;
+  };
+  io::print_int(maximum);
+}
+
+fn main() {
+  let code = intcode::parse(day7_input::input());
+  part1(code);
+  part2(code);
+}
