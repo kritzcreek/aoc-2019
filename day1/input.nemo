@@ -1,4 +1,5 @@
-module input exports (input)
+module day1_input
+exports (input)
 
 fn input() -> Bytes { "
 119341

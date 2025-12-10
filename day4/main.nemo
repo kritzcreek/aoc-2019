@@ -1,3 +1,6 @@
+module day4
+exports (main)
+
 use io
 use vec
 use string

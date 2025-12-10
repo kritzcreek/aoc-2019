@@ -1,4 +1,4 @@
-if (Deno.args.length !== 1) {
+if (Deno.args.length < 1) {
   console.error("Please provide a file path as an argument");
   Deno.exit(1);
 }
@@ -18,10 +18,12 @@ const imports = {
 
 let start = performance.mark("start");
 const filePath = Deno.args[0];
+const mod = Deno.args[1];
 const wasmCode = await Deno.readFile(filePath);
 const wasmInstance = await WebAssembly.instantiate(wasmCode, imports);
-const main = (wasmInstance.instance.exports["main"] ??
-  wasmInstance.instance.exports["main::main"]) as CallableFunction;
+const main = mod == null ?
+  wasmInstance.instance.exports["main"] as CallableFunction :
+  wasmInstance.instance.exports[`${mod}::main`] as CallableFunction;
 main();
 let perf = performance.measure("runtime", "start");
 console.log(`${perf.duration.toFixed(2)}ms`);

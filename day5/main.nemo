@@ -1,3 +1,6 @@
+module day5
+exports (main)
+
 use day5_input
 use intcode
 use io
@@ -7,22 +10,25 @@ fn main() {
   let code = intcode::parse(day5_input::input());
 
   io::println_bytes("Part 1");
-  let vm = intcode::init_vm(code, [1]);
-  let output = intcode::run(vm);
-  let output_size = array_len#[I32](output);
+  let vm = intcode::init_vm(code);
+  intcode::add_input(vm, 1);
+  intcode::run(vm);
+  let output = vm.output;
   let i = 0;
-  while i < output_size {
-    io::print_int(output[i]);
+  while i < output.len {
+    io::print_int(output.buf[i]);
     set i = i + 1
   };
 
   io::println_bytes("Part 2");
-  let vm = intcode::init_vm(code, [5]);
+  let vm = intcode::init_vm(code);
+  intcode::add_input(vm, 5);
   let output = intcode::run(vm);
-  let output_size = array_len#[I32](output);
+  let output = vm.output;
+  let output = vm.output;
   let i = 0;
-  while i < output_size {
-    io::print_int(output[i]);
+  while i < output.len {
+    io::print_int(output.buf[i]);
     set i = i + 1
-  }
+  };
 }

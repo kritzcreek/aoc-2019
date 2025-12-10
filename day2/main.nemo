@@ -1,4 +1,7 @@
-use input
+module day2
+exports (main)
+
+use day2_input
 use io
 use vec
 use string
@@ -104,7 +107,7 @@ fn solution2(original : Array[I32], numbers : Array[I32]) -> I32 {
 }
 
 fn main() {
-  let original = parse(input::input());
+  let original = parse(day2_input::input());
   let numbers = array_new#[I32](0, array_len#[I32](original));
   reset_numbers(original, numbers);
   io::print_int(solution1(numbers));
