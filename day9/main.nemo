@@ -1,0 +1,19 @@
+module day9
+exports (main)
+
+use day9_input
+use intcode
+use io
+use vec
+
+import log_i64 : fn (I64) -> Unit from log_i64
+
+fn main() {
+    let code = intcode::parse(day9_input::input());
+    let vm = intcode::init_vm(code, 10000);
+    intcode::add_input(vm, 2);
+    intcode::run(vm);
+    when vm.running == false {
+      log_i64(intcode::get_output(vm));
+    }
+}

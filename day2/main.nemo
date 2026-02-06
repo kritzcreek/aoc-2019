@@ -35,14 +35,7 @@ fn parse(input : Bytes) -> Array[I32] {
     set i = i + 1;
   };
   vec::push(numbers, current);
-
-  let result = array_new#[I32](0, numbers.len);
-  set i = 0;
-  while i < numbers.len {
-    set result[i] = numbers.buf[i];
-    set i = i + 1;
-  };
-  result
+  vec::to_array(numbers)
 }
 
 fn reset_numbers(original : Array[I32], numbers : Array[I32]) {

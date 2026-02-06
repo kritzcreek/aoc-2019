@@ -8,6 +8,7 @@ const imports = {
   env: {
     log: (arg: number) => console.log(arg),
     log_int: (arg: number) => console.log(arg),
+    log_i64: (arg: number) => console.log(arg),
     log_f32: (arg: number) => console.log(arg),
     log_float: (arg: number) => console.log(arg),
     print_char: (cp: number) =>

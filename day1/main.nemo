@@ -16,7 +16,7 @@ fn digit(i : I32) -> I32 {
   i - 48
 }
 
-fn parse(input : Bytes) -> vec::Vec[I32] {
+fn parse(input : Bytes) -> Array[I32] {
   let len = bytes_len(input);
   let i = 0;
   let numbers = vec::new(0);
@@ -34,7 +34,7 @@ fn parse(input : Bytes) -> vec::Vec[I32] {
     set i = i + 1;
   };
 
-  numbers
+  vec::to_array(numbers)
 }
 
 fn max(x : I32, y : I32) -> I32 {
@@ -45,21 +45,21 @@ fn fuel(mass : I32) -> I32 {
   max(0, mass / 3 - 2)
 }
 
-fn solve1(masses : vec::Vec[I32]) -> I32 {
+fn solve1(masses : Array[I32]) -> I32 {
   let result = 0;
   let i = 0;
-  while i < masses.len {
-    set result = result + fuel(masses.buf[i]);
+  while i < array_len#[I32](masses) {
+    set result = result + fuel(masses[i]);
     set i = i + 1;
   };
   result
 }
 
-fn solve2(masses : vec::Vec[I32]) -> I32 {
+fn solve2(masses : Array[I32]) -> I32 {
   let result = 0;
   let i = 0;
-  while i < masses.len {
-    let current_fuel = fuel(masses.buf[i]);
+  while i < array_len#[I32](masses) {
+    let current_fuel = fuel(masses[i]);
     while current_fuel != 0 {
       set result = result + current_fuel;
       set current_fuel = fuel(current_fuel);

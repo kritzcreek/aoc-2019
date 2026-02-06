@@ -1,0 +1,10 @@
+module day11
+exports (main)
+
+use hamt
+use hash
+
+fn main() {
+  let code = intcode::parse(day11_input::input());
+  let vm = intcode::new(code);
+}

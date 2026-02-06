@@ -1,0 +1,90 @@
+module day8
+exports (main)
+
+use day8_input
+use io
+use vec
+
+import print_char : fn (I32) -> Unit from print_char
+
+struct Layer {
+  zero : I32,
+  one : I32,
+  two : I32,
+}
+
+fn empty_layer() -> Layer {
+  Layer { zero = 0, one = 0, two = 0 }
+}
+
+fn solve1(numbers : Bytes) {
+  let input_len = bytes_len(numbers);
+  let layers = vec::new(empty_layer());
+  let i = 0;
+
+  while i < input_len {
+    let layer = empty_layer();
+    let j = 0;
+    while j < 25 * 6 {
+      let n = bytes_get(numbers, i) - 48;
+      if n == 0 {
+        set layer.zero = layer.zero + 1;
+      } else {
+        if n == 1 {
+          set layer.one = layer.one + 1;
+        } else {
+          set layer.two = layer.two + 1;
+        }
+      };
+      set i = i + 1;
+      set j = j + 1;
+    };
+    vec::push(layers, layer);
+  };
+
+  let result = 0;
+  let min_zero = 1000000000;
+
+  let i = 0;
+  while i < layers.len {
+    let l = vec::index(layers, i);
+    when l.zero < min_zero {
+      set min_zero = l.zero;
+      set result = l.one * l.two;
+    };
+    set i = i + 1;
+  };
+  io::print_int(result)
+}
+
+fn solve2(numbers : Bytes) {
+  let y = 0;
+  while y < 6 {
+    let x = 0;
+    while x < 25 {
+      let pxl = 2;
+      let l = 0;
+      while pxl == 2 {
+        let ix = x + y * 25 + l * 150;
+        set pxl = bytes_get(numbers, ix) - 48;
+        set l = l + 1;
+      };
+      if pxl == 0 {
+        io::print_bytes(" ");
+      } else {
+        when pxl == 1 {
+          print_char(0x2588);
+        }
+      };
+      set x = x + 1;
+    };
+    set y = y + 1;
+    io::println_bytes("");
+  }
+}
+
+fn main() {
+  let numbers = day8_input::input();
+  solve1(numbers);
+  solve2(numbers);
+}

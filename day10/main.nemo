@@ -1,0 +1,53 @@
+module day10
+exports (main)
+
+use prim
+use day10_input
+use io
+use vec
+
+struct Point { x : I32, y : I32 }
+
+fn parse_input(input : Bytes) -> Array[Point] {
+    let points = vec::new(Point { x = 0, y = 0 });
+    let i = 0;
+    let y = 0;
+    while i < prim::bytes_len(input) {
+      let x = 0;
+      while prim::bytes_get(input, i) != 10 {
+        when prim::bytes_get(input, i) == 35 {
+          vec::push(points, Point { x = x, y = y });
+        };
+        set x = x + 1;
+        set i = i + 1;
+      };
+      set i = i + 1;
+      set y = y + 1;
+    };
+    vec::to_array(points)
+}
+
+struct Line { point : Point, vector : Point }
+
+fn line_between(p1 : Point, p2 : Point) -> Line {
+  Line {
+    point = p1,
+    vector = Point {
+      x = p1.x - p2.x,
+      y = p1.y - p2.y
+    }
+  }
+}
+
+fn collides(l : Line, p : Point) -> Bool {
+  //  l.point.x + t * l.vector.x = p.x
+  //  (p.x - l.point.x) / l.vector.x = t
+  //  l.point.y + t * l.vector.y = p.y
+  //  (p.y - l.point.y) / l.vector.x = t
+  let t1 = (p.x - l.point.x) /
+}
+
+fn main() {
+    let points = parse_input(day10_input::input());
+    io::print_int(prim::array_len(points));
+}
